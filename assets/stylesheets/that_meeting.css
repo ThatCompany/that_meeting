@@ -1,0 +1,32 @@
+#cm_contextual_menu .dropdown-menu a.ics {
+    background: url(../images/calendar.png) no-repeat 1px 50%;
+    padding: 2px 0px 3px 20px;
+    background-size: 13px;
+}
+#sidebar ul.watchers {
+    margin-right: 10px;
+}
+#sidebar ul.attendees li:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+ul.watchers li span.meeting-status {
+    float: right;
+    clear: right;
+}
+.icon-meeting-accepted {
+    background-image: url(../images/tick.png);
+    background-size: 12px;
+}
+.icon-meeting-tentative {
+    background-image: url(../images/tick.png);
+    background-size: 12px;
+    opacity: 0.4;
+}
+.icon-meeting-declined {
+    background-image: url(../images/close.png);
+    background-size: 12px;
+}
+tr.issue td.recurrence {
+    white-space: normal;
+    text-align: left;
+}

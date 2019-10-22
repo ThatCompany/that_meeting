@@ -1,0 +1,42 @@
+<% if issue.meeting? %>
+  <div class="meeting-date attribute" style="display: none;">
+    <div class="label"><%= l(:label_date) %>:</div>
+    <div class="value">
+      <%= format_time(issue.start_time) %>
+      <% if issue.end_time%>- <%= format_time(issue.end_time, false) %><% end %>
+    </div>
+  </div>
+  <div class="meeting-recurrence attribute" style="display: none;">
+    <div class="label"><%= l(:field_recurrence) %>:</div>
+    <div class="value"><%= issue.recurrence %></div>
+  </div>
+
+  <%= javascript_tag do %>
+    var $start_date = $('.attributes .start-date.attribute');
+    var $meeting_date = $('.attributes .meeting-date.attribute');
+    var $meeting_recurrence = $('.attributes .meeting-recurrence.attribute');
+    if ($start_date.length > 0) {
+        $start_date.replaceWith($meeting_date);
+        $meeting_date.after($meeting_recurrence);
+    }
+    $meeting_date.show();
+    $meeting_recurrence.show();
+
+    $(document).ready(function() {
+      var $icsLink = $('<a>', {
+        'class': 'ics',
+        rel: 'nofollow',
+        href: '<%= issue_path(issue, :format => 'ics') %>'
+      }).text('ICS');
+      var $otherFormats = $('p.other-formats');
+      if ($otherFormats.length > 0) {
+        $otherFormats.append($('<span>').html($icsLink));
+      } else {
+        var $customMenu = $('#dd-ul'); // Custom menu plugin
+        if ($customMenu.length > 0) {
+          $customMenu.append($('<li>').html($icsLink.addClass('icon no_line').html($('<span>').text($icsLink.text()))));
+        }
+      }
+    });
+  <% end %>
+<% end %>

@@ -1,0 +1,34 @@
+<p>
+  <%= label_tag('settings[tracker_ids]', l(:label_tracker_plural)) %>
+  <% Tracker.sorted.each do |tracker| %>
+    <label class="block">
+      <%= check_box_tag('settings[tracker_ids][]', tracker.id, @settings['tracker_ids'].is_a?(Array) && @settings['tracker_ids'].include?(tracker.id.to_s)) %>
+      <%= tracker.name %>
+    </label>
+  <% end %>
+</p>
+<p>
+  <%= label_tag('settings[cancel_status_ids]', l(:label_cancel_statuses)) %>
+  <% IssueStatus.where(:is_closed => true).each do |status| %>
+    <label class="block">
+      <%= check_box_tag('settings[cancel_status_ids][]', status.id, @settings['cancel_status_ids'].is_a?(Array) && @settings['cancel_status_ids'].include?(status.id.to_s)) %>
+      <%= status.name %>
+    </label>
+  <% end %>
+</p>
+<p>
+  <%= label_tag('settings[hide_mails]', l(:label_respect_email_visibility)) %>
+  <%= check_box_tag('settings[hide_mails]', '1', @settings['hide_mails']) %>
+</p>
+<p>
+  <%= label_tag('settings[force_notifications]', l(:label_force_icalendar_notifications)) %>
+  <%= check_box_tag('settings[force_notifications]', '1', @settings['force_notifications']) %>
+</p>
+<p>
+  <%= label_tag('settings[system_timezone]', l(:label_system_timezone)) %>
+  <%= select_tag('settings[system_timezone]', options_for_select(ActiveSupport::TimeZone.all.map{ |zone| [ zone.to_s, zone.tzinfo.identifier ] }, @settings['system_timezone']), :include_blank => true) %>
+</p>
+<p>
+  <%= label_tag('settings[timezone_format]', l(:label_timezone_format)) %>
+  <%= select_tag('settings[timezone_format]', options_for_select(%w(%Z %z).map{ |format| [ I18n.l(Time.now, :locale => locale, :format => format), format] }, @settings['timezone_format'])) %>
+</p>

@@ -1,0 +1,83 @@
+<% if issue.meeting? %>
+  <div id="meeting_form">
+    <% if issue.safe_attribute?('start_date') %>
+      <p>
+        <%= form.label_for_field(:start_date, :label => :label_date, :required => issue.required_attribute?('start_date')) %>
+        <%= form.date_field(:start_date, :size => 10, :no_label => true) %>
+        <%= calendar_for('issue_start_date') %>
+        <%= time_field_tag('issue[start_time]', edit_time(issue.start_time), :size => 6) %> -
+        <%= time_field_tag('issue[end_time]', edit_time(issue.end_time), :size => 6) %>
+      </p>
+    <% end %>
+    <% if issue.safe_attribute?('recurrence') %>
+      <p>
+        <%= label_tag('issue[recurrence][type]', l(:field_recurrence)) %>
+        <%= select_tag('issue[recurrence][type]', recurrence_type_options_for_select(issue.recurrence.try(:type)), :onchange => 'handleRecurrenceTypeChange();') %>
+        <span class="recurrence-options weekly" style="display: none;">
+          <%= recurrence_week_days_checkboxes(issue) %>
+        </span>
+        <span class="recurrence-options monthly" style="display: none;">
+          <span>
+            <%= label_tag(nil, radio_button_tag('issue[recurrence][monthly_by]', 'day', issue.recurrence.try(:by_day?),
+                                                :onchange => "handleRecurrenceByChange($(this).closest('span'));") + l(:label_on_day), :class => 'inline') %>
+            <%= select_tag('issue[recurrence][day]', options_for_select(1..31, issue.recurrence.try(:day))) %>
+          </span>
+          <span>
+            <%= label_tag(nil, radio_button_tag('issue[recurrence][monthly_by]', 'position', issue.recurrence.try(:by_position?),
+                                                :onchange => "handleRecurrenceByChange($(this).closest('span'));") + l(:label_on_position), :class => 'inline') %>
+            <%= select_tag('issue[recurrence][position]', recurrence_position_options_for_select(issue.recurrence.try(:position))) %>
+            <%= select_tag('issue[recurrence][wday]', recurrence_wday_options_for_select(issue.recurrence.try(:wday))) %>
+          </span>
+        </span>
+        <span class="recurrence-options yearly" style="display: none;">
+          <span>
+            <%= label_tag(nil, radio_button_tag('issue[recurrence][yearly_by]', 'day', issue.recurrence.try(:by_day?),
+                                                :onchange => "handleRecurrenceByChange($(this).closest('span'));") + l(:label_on_month), :class => 'inline') %>
+            <%= select_tag('issue[recurrence][month]', options_for_select((1..12).collect{ |month| [ month_name(month), month ] }, issue.recurrence.try(:dmonth))) %>
+            <%= select_tag('issue[recurrence][day]', options_for_select(1..31, issue.recurrence.try(:day))) %>
+          </span>
+          <span>
+            <%= label_tag(nil, radio_button_tag('issue[recurrence][yearly_by]', 'position', issue.recurrence.try(:by_position?),
+                                                :onchange => "handleRecurrenceByChange($(this).closest('span'));") + l(:label_on_position), :class => 'inline') %>
+            <%= select_tag('issue[recurrence][position]', recurrence_position_options_for_select(issue.recurrence.try(:position))) %>
+            <%= select_tag('issue[recurrence][wday]', recurrence_wday_options_for_select(issue.recurrence.try(:wday))) %><%= label_tag('issue[recurrence][month]', l(:label_of_month), :class => 'inline') %>
+            <%= select_tag('issue[recurrence][month]', options_for_select((1..12).collect{ |month| [ month_name(month), month ] }, issue.recurrence.try(:month))) %>
+          </span>
+        </span>
+      </p>
+      <div id="recurrence_options" style="display: none;">
+        <p>
+          <%= label_tag('issue[recurrence][every]', l(:label_every)) %>
+          <%= number_field_tag('issue[recurrence][every]', issue.recurrence.try(:every), :min => 1, :size => 3, :style => 'width: 55px;') %> <%= recurrence_interval_label %>
+        </p>
+        <p>
+          <%= label_tag('issue[recurrence][end]', l(:label_end)) %>
+          <%= select_tag('issue[recurrence][end]', recurrence_end_options_for_select(issue.recurrence.try(:end)), :name => nil, :onchange => 'handleRecurrenceEndChange();') %>
+          <span class="end-options end-count" style="display: none;">
+            <%= number_field_tag('issue[recurrence][count]', issue.recurrence.try(:count), :min => 1, :size => 3, :style => 'width: 55px;') %><%= label_tag('issue[recurrence][count]', l(:label_occurrences), :class => 'inline') %>
+          </span>
+          <span class="end-options end-until" style="display: none;">
+            <%= date_field_tag('issue[recurrence][until]', issue.recurrence.try(:until), :size => 10) %>
+            <%= calendar_for('issue_start_date') %>
+          </span>
+        </p>
+      </div>
+    <% end %>
+  </div>
+
+  <%= javascript_tag do %>
+    $('#start_date_area').remove();
+    handleRecurrenceTypeChange();
+    handleRecurrenceEndChange();
+  <% end %>
+<% end %>
+
+<%= javascript_tag do %>
+  $(document).ready(function() {
+    $('#watchers_form > label').text('<%= escape_javascript(l(issue.meeting? ? :label_attendees : :label_issue_watchers)) %>');
+  });
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= javascript_include_tag('meeting', :plugin => 'that_meeting') %>
+<% end %>

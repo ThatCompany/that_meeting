@@ -1,0 +1,72 @@
+en:
+  field_recurrence: Repeat
+  field_start_time: Start time
+  field_end_time: End time
+  label_daily: daily
+  label_weekly: weekly
+  label_monthly: monthly
+  label_yearly: yearly
+  label_repeat_daily:
+    one: Daily
+    other: Every %{count} days
+  label_repeat_weekly:
+    one: Weekly
+    other: Every %{count} weeks
+  label_repeat_monthly:
+    one: Monthly
+    other: Every %{count} months
+  label_repeat_yearly:
+    one: Yearly
+    other: Every %{count} years
+  label_on_day: on day
+  label_on_position: on the
+  label_on_month: "on"
+  label_of_month: of
+  label_first: first
+  label_second: second
+  label_third: third
+  label_fourth: fourth
+  label_last: last
+  label_interval_daily: day(s)
+  label_interval_weekly: week(s)
+  label_interval_monthly: month(s)
+  label_interval_yearly: year(s)
+  label_workday: Workday
+  label_every: Every
+  label_end: End
+  label_never: never
+  label_after: after
+  label_on_date: "on"
+  label_occurrences: occurrences
+  label_repeat_on_week_day: on %{value}
+  label_repeat_on_day: on %{value}
+  label_repeat_on_nth_day: on the %{nth} %{day}
+  label_repeat_on_nth_day_of_month: on the %{nth} %{day} of %{month}
+  label_repeat_count: "%{count} times"
+  label_repeat_until: until %{value}
+  label_respect_email_visibility: Respect email visibility settings
+  label_cancel_statuses: Cancel statuses
+  label_force_icalendar_notifications: Force email notifications for meetings
+  label_system_timezone: System time zone
+  label_timezone_format: Time zone format
+  label_attendees: Attendees
+  label_meeting_status_all_reset: Meeting acceptance reset
+  label_meeting_status_none: Meeting acceptance needed
+  label_meeting_status_accepted: Meeting accepted
+  label_meeting_status_tentative: Meeting accepted tentatively
+  label_meeting_status_declined: Meeting declined
+  recurrence_type: Repeat
+  recurrence_wday: Repeat week day
+  recurrence_day: Repeat day
+  recurrence_month: Repeat month
+  recurrence_position: Repeat position
+  recurrence_every: Repeat interval
+  recurrence_count: Number of occurrences
+  recurrence_until: Repeat end date
+  activerecord:
+    errors:
+      messages:
+        not_a_time: is not a valid time
+        greater_than_start_time: must be greater than start time
+  text_attendee_invited: "You have been invited to meeting %{id} by %{author}."
+  notice_calendar_counter_declined: Counter proposal declined.
