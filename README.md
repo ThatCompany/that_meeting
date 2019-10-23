@@ -1,18 +1,22 @@
 # That Meeting Plugin for Redmine
 
-This plugin allows to make Redmine issues act as [iCalendar](https://icalendar.org/)
+This plugin allows Redmine issues to act as [iCalendar](https://icalendar.org/)
 events (i.e., implements [iTIP](https://tools.ietf.org/html/rfc5546) and
-[iMIP](https://tools.ietf.org/html/rfc6047) support for Redmine).
-Due to the nature of the iCalendar protocols this functionality relies on
-Redmine's email integration ([notifications](http://www.redmine.org/projects/redmine/wiki/EmailConfiguration) and
+[iMIP](https://tools.ietf.org/html/rfc6047) support for Redmine). Create issues
+using the event tracker, that you define, and Redmine will send out calendar
+meetings / events as you would with any calendar software. Events no longer
+need to be created outside of Redmine and all communication related to
+the events stays within Redmine for ease of reference. Due to the nature of the
+iCalendar protocols this functionality relies on Redmine's email integration
+([notifications](http://www.redmine.org/projects/redmine/wiki/EmailConfiguration) and
 [receiving](https://www.redmine.org/projects/redmine/wiki/RedmineReceivingEmails)),
 which, therefore, must be configured for the plugin to work.
 
 When the plugin is enabled (for the issue tracker), an issue creation email
-notification becomes an event invitation. Then, an email client, which supports
-iCalendar (such as Google Mail or Thunderbird), receives such email and renders
-as an event allowing to add it to the user calendar and to respond to the
-invitation (accept - tentatively, if not sure - or decline). Such response is
+notification becomes an event invitation. Then, when email clients, that support
+iCalendar (such as Google Mail, Thunderbird, Outlook), receive the email, they will render it
+as an event allowing recipients to add the event to their calendar and respond to the
+invitation (accept - tentatively, if not sure - or decline). The response is
 then sent back to Redmine and handled by the plugin (if Redmine's
 [email receiving](https://www.redmine.org/projects/redmine/wiki/RedmineReceivingEmails)
 is properly configured). In this way, user responses are added to the issue
@@ -23,12 +27,12 @@ history and shown on the sidebar:
 _As you can see on this screenshot, if the meeting functionality is enabled for
 the issue tracker, the issue's watchers are treated as attendees._
 
-When an issue acts as an iCalendar event, any its modification, which is related
-to the event (e.g., change of the start date), sends the updated iCalendar
-information to all its attendees (watchers). In this way, all attendees will
+When an issue acts as an iCalendar event, any modification to the issue related
+to the event (e.g., change of the start date) sends the updated iCalendar
+information to all attendees (watchers). In this way, all attendees will
 automatically have the updated event in their calendars.
 
-The plugin supports all the basic scheduling and recurrence settings, that are
+The plugin supports all of the basic scheduling and recurrence settings, that are
 supported by major calendar software. These include:
 
 - Start time and end time or duration (issue's estimated time)
