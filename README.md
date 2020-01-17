@@ -100,6 +100,9 @@ configuration consistent with the plugin's behavior (optional):
   trackers
 - Using **Workflow** - **Fields permissions** make **Assignee** and **Start date**
   attributes required for meeting trackers (for all roles)
+- Using **Workflow** - **Fields permissions** make **Due date** attribute
+  read-only for meeting trackers (for all roles) or just disable this attribute
+  in **Trackers**
 
 ## License
 

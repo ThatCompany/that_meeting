@@ -25,6 +25,8 @@ module Patches
                     issue.new_record? || issue.attributes_editable?(user)
                 }
 
+                before_save :update_meeting_due_date, :if => Proc.new { |issue| issue.meeting? }
+
                 alias_method_chain :safe_attribute_names,        :meeting
                 alias_method_chain :required_attribute_names,    :meeting
                 alias_method_chain :journalized_attribute_names, :meeting
@@ -61,6 +63,7 @@ module Patches
                 if meeting?
                     attribute_names << 'assigned_to_id' unless attribute_names.include?('assigned_to_id')
                     attribute_names << 'start_date' unless attribute_names.include?('start_date')
+                    attribute_names.delete('due_date') if attribute_names.include?('due_date')
                 end
                 attribute_names
             end
@@ -110,6 +113,20 @@ module Patches
                 p = instance_variable_defined?(:@parent_issue) ? @parent_issue : parent
                 if p && Setting.parent_issue_dates == 'derived'
                     errors.add(:parent_issue_id, :invalid) if p.meeting?
+                end
+            end
+
+            def update_meeting_due_date
+                if start_date_changed? || meeting.recurrence_changed?
+                    if meeting.recurrence.any?
+                        if meeting.recurrence.until
+                            self.due_date = meeting.recurrence.until
+                        else
+                            self.due_date = nil # Recurring forever
+                        end
+                    else
+                        self.due_date = start_date # Not recurring
+                    end
                 end
             end
 

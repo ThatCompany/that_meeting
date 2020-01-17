@@ -15,12 +15,14 @@ class IssueMeeting::Recurrence
     BY_POSITION = :position
 
     def self.load(str)
-        new(YAML.load(str.to_s)) unless str.nil?
+        new(str.nil? ? {} : YAML.load(str.to_s))
     end
 
     def self.dump(value)
         return nil unless value.respond_to?(:to_hash)
-        YAML.dump(value.to_hash.symbolize_keys)
+        hash = value.to_hash.symbolize_keys
+        return nil unless hash[:type]
+        YAML.dump(hash)
     end
 
     def self.human_attribute_name(name, options = {})
@@ -282,6 +284,7 @@ class IssueMeeting::Recurrence
             end
         end
         attributes.delete(:every) if attributes[:every] == 1
+        attributes.delete(:type) if attributes.has_key?(:type) && !attributes[:type]
         attributes
     end
 
