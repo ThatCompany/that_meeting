@@ -4,16 +4,45 @@ module Patches
     module ThatMeetingMailerPatch
 
         def self.included(base)
+            if Redmine::VERSION::MAJOR > 3
+                base.send(:include, Redmine4InstanceMethods)
+            else
+                base.send(:include, Redmine3InstanceMethods)
+            end
             base.send(:include, InstanceMethods)
             base.class_eval do
                 unloadable
 
-                alias_method_chain :issue_add,  :meeting
-                alias_method_chain :issue_edit, :meeting
+                alias_method :issue_add_without_meeting, :issue_add
+                alias_method :issue_add, :issue_add_with_meeting
+
+                alias_method :issue_edit_without_meeting, :issue_edit
+                alias_method :issue_edit, :issue_edit_with_meeting
             end
         end
 
-        module InstanceMethods
+        module Redmine4InstanceMethods
+
+            def issue_add_with_meeting(user, issue)
+                if issue.meeting? && !issue.meeting.canceled?
+                    attach_ical issue, user
+                    issue.author.pref.no_self_notified = false if Setting.plugin_that_meeting['force_notifications']
+                end
+                issue_add_without_meeting(user, issue)
+            end
+
+            def issue_edit_with_meeting(user, journal)
+                issue = journal.journalized
+                if issue.meeting? && meeting_attribute_changed?(journal)
+                    attach_ical issue, user
+                    journal.user.pref.no_self_notified = false if Setting.plugin_that_meeting['force_notifications']
+                end
+                issue_edit_without_meeting(user, journal)
+            end
+
+        end
+
+        module Redmine3InstanceMethods
 
             def issue_add_with_meeting(issue, to_users, cc_users)
                 if issue.meeting? && !issue.meeting.canceled?
@@ -34,7 +63,11 @@ module Patches
                 issue_edit_without_meeting(journal, to_users, cc_users)
             end
 
-            def attendee_invited(issue, user)
+        end
+
+        module InstanceMethods
+
+            def attendee_invited(user, issue, author)
                 redmine_headers 'Project' => issue.project.identifier,
                                 'Issue-Id' => issue.id,
                                 'Issue-Author' => issue.author.login
@@ -42,9 +75,10 @@ module Patches
                 message_id issue
                 references issue
                 attach_ical issue, user
-                @author = User.current
+                @author = author
                 @issue = issue
-                @users = [ user ]
+                @user = user if Redmine::VERSION::MAJOR > 3
+                @users = [ user ] if Redmine::VERSION::MAJOR < 4
                 @issue_url = url_for(:controller => 'issues', :action => 'show', :id => issue)
                 @author.pref.no_self_notified = false if Setting.plugin_that_meeting['force_notifications']
                 mail :to => user,

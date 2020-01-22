@@ -8,9 +8,14 @@ module Patches
             base.class_eval do
                 unloadable
 
-                alias_method_chain :render_issue_tooltip, :meeting
-                alias_method_chain :email_issue_attributes, :meeting
-                alias_method_chain :show_detail, :meeting
+                alias_method :render_issue_tooltip_without_meeting, :render_issue_tooltip
+                alias_method :render_issue_tooltip, :render_issue_tooltip_with_meeting
+
+                alias_method :email_issue_attributes_without_meeting, :email_issue_attributes
+                alias_method :email_issue_attributes, :email_issue_attributes_with_meeting
+
+                alias_method :show_detail_without_meeting, :show_detail
+                alias_method :show_detail, :show_detail_with_meeting
             end
         end
 

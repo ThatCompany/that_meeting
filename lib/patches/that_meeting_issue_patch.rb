@@ -4,6 +4,7 @@ module Patches
     module ThatMeetingIssuePatch
 
         def self.included(base)
+            base.send(:include, EachNotificationMethod) if base.method_defined?(:each_notification) # Redmine 3
             base.send(:include, InstanceMethods)
             base.class_eval do
                 unloadable
@@ -27,11 +28,36 @@ module Patches
 
                 before_save :update_meeting_due_date, :if => Proc.new { |issue| issue.meeting? }
 
-                alias_method_chain :safe_attribute_names,        :meeting
-                alias_method_chain :required_attribute_names,    :meeting
-                alias_method_chain :journalized_attribute_names, :meeting
-                alias_method_chain :each_notification,           :meeting
+                alias_method :safe_attribute_names_without_meeting, :safe_attribute_names
+                alias_method :safe_attribute_names, :safe_attribute_names_with_meeting
+
+                alias_method :required_attribute_names_without_meeting, :required_attribute_names
+                alias_method :required_attribute_names, :required_attribute_names_with_meeting
+
+                alias_method :journalized_attribute_names_without_meeting, :journalized_attribute_names
+                alias_method :journalized_attribute_names, :journalized_attribute_names_with_meeting
+
+                if method_defined?(:each_notification) # Redmine 3
+                    alias_method :each_notification_without_meeting, :each_notification
+                    alias_method :each_notification, :each_notification_with_meeting
+                end
             end
+        end
+
+        module EachNotificationMethod # Redmine 3
+
+            def each_notification_with_meeting(users, &block)
+                if meeting? && users.any?
+                    attendees, rest = users.partition{ |user| watched_by?(user) }
+                    attendees.each do |attendee|
+                        yield([ attendee ])
+                    end
+                    each_notification_without_meeting(rest, &block)
+                else
+                    each_notification_without_meeting(users, &block)
+                end
+            end
+
         end
 
         module InstanceMethods
@@ -81,18 +107,6 @@ module Patches
                 attribute_names = journalized_attribute_names_without_meeting
                 attribute_names += %w(start_time end_time recurrence) if meeting?
                 attribute_names
-            end
-
-            def each_notification_with_meeting(users, &block)
-                if meeting? && users.any?
-                    attendees, rest = users.partition{ |user| watched_by?(user) }
-                    attendees.each do |attendee|
-                        yield([ attendee ])
-                    end
-                    each_notification_without_meeting(rest, &block)
-                else
-                    each_notification_without_meeting(users, &block)
-                end
             end
 
         private

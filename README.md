@@ -82,6 +82,7 @@ The following things are incomplete or may not work as expected:
 In the plugin's settings:
 
 - Choose the trackers, for which the meetings functionality should be enabled
+  _(you may need to create a special tracker for meetings)_
 - Choose the issue statuses, which will be used to cancel meetings
 - Choose whether users' email visibility preferences should be respected
   (without this users' email addresses will be included into iCalendar files,

@@ -8,9 +8,14 @@ module Patches
             base.class_eval do
                 unloadable
 
-                alias_method_chain :receive,             :calendar
-                alias_method_chain :dispatch_to_default, :calendar
-                alias_method_chain :receive_issue_reply, :calendar
+                alias_method :receive_without_calendar, :receive
+                alias_method :receive, :receive_with_calendar
+
+                alias_method :dispatch_to_default_without_calendar, :dispatch_to_default
+                alias_method :dispatch_to_default, :dispatch_to_default_with_calendar
+
+                alias_method :receive_issue_reply_without_calendar, :receive_issue_reply
+                alias_method :receive_issue_reply, :receive_issue_reply_with_calendar
             end
         end
 

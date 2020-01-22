@@ -18,7 +18,7 @@ module Patches
 
             def send_meeting_invitation
                 if !watchable.meeting.canceled? && watchable.notify? && Setting.notified_events.include?('issue_added')
-                    Mailer.attendee_invited(watchable, user).deliver
+                    Mailer.attendee_invited(user, watchable, User.current).deliver
                 end
             end
 

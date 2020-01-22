@@ -1,4 +1,4 @@
 <%= l(:text_attendee_invited, :id => "##{@issue.id}", :author => @author) %>
 
 ----------------------------------------
-<%= render :partial => 'issue', :formats => [ :text ], :locals => { :issue => @issue, :users => @users, :issue_url => @issue_url } %>
+<%= render :partial => 'issue', :formats => [ :text ], :locals => { :issue => @issue, :user => @user, :users => @users, :issue_url => @issue_url } %>

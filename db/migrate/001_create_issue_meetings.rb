@@ -1,4 +1,4 @@
-class CreateIssueMeetings < ActiveRecord::Migration
+class CreateIssueMeetings < Rails::VERSION::MAJOR < 5 ? ActiveRecord::Migration : ActiveRecord::Migration[4.2]
 
     def self.up
         create_table :issue_meetings do |t|

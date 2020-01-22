@@ -8,7 +8,8 @@ module Patches
             base.class_eval do
                 unloadable
 
-                alias_method_chain :normalize, :meeting
+                alias_method :normalize_without_meeting, :normalize
+                alias_method :normalize, :normalize_with_meeting
             end
         end
 

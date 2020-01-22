@@ -8,7 +8,8 @@ module Patches
             base.class_eval do
                 unloadable
 
-                alias_method_chain :watchers_list, :meeting
+                alias_method :watchers_list_without_meeting, :watchers_list
+                alias_method :watchers_list, :watchers_list_with_meeting
             end
         end
 

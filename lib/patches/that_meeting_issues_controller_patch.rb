@@ -8,7 +8,8 @@ module Patches
             base.class_eval do
                 unloadable
 
-                alias_method_chain :show, :ics
+                alias_method :show_without_ics, :show
+                alias_method :show, :show_with_ics
             end
         end
 

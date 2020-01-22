@@ -10,7 +10,8 @@ module Patches
 
                 before_create :reset_acceptance
 
-                alias_method_chain :add_attribute_detail, :time
+                alias_method :add_attribute_detail_without_time, :add_attribute_detail
+                alias_method :add_attribute_detail, :add_attribute_detail_with_time
             end
         end
 
