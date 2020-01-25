@@ -132,6 +132,7 @@ private
     def full_date(time)
         date = issue.start_date || Date.today
         if time_zone
+            time = time.in_time_zone(time_zone) if Redmine::VERSION::MAJOR > 3
             time_zone.parse("#{date.strftime('%Y-%m-%d')} #{time.strftime('%H:%M:%S')}")
         else
             DateTime.new(date.year, date.month, date.day, time.hour, time.min, time.sec, time.zone).utc # Can be inaccurate when DST changes

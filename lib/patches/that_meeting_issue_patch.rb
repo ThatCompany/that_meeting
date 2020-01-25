@@ -9,7 +9,7 @@ module Patches
             base.class_eval do
                 unloadable
 
-                has_one :meeting, :class_name => 'IssueMeeting', :autosave => true, :dependent => :destroy
+                has_one :meeting, :class_name => 'IssueMeeting', :autosave => true, :validate => false, :dependent => :destroy
 
                 has_many :acceptances, lambda {
                     where(:property => 'attendee').order("#{JournalDetail.table_name}.id DESC")
