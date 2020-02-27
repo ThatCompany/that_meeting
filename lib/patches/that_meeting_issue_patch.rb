@@ -26,7 +26,7 @@ module Patches
                     issue.new_record? || issue.attributes_editable?(user)
                 }
 
-                before_save :update_meeting_due_date, :if => Proc.new { |issue| issue.meeting? }
+                before_validation :update_meeting_due_date, :if => Proc.new { |issue| issue.meeting? }
 
                 alias_method :safe_attribute_names_without_meeting, :safe_attribute_names
                 alias_method :safe_attribute_names, :safe_attribute_names_with_meeting

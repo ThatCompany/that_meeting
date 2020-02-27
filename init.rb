@@ -50,6 +50,7 @@ Redmine::Plugin.register :that_meeting do
     author 'Andriy Lesyuk for That Company'
     author_url 'http://www.andriylesyuk.com/'
     description 'Converts issues of the selected trackers into iCalendar events.'
+    url 'https://github.com/thatcompany/that_meeting'
     version '0.0.1'
 
     settings :default => {
