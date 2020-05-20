@@ -86,6 +86,8 @@ module Patches
                     journal.save!
                     logger.info "MailHandler: iCalendar reply received from #{user} for meeting ##{issue.id}" if logger
                     journal
+                else
+                    true # Otherwise error will be returned
                 end
             end
 
