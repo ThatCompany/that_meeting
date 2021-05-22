@@ -68,14 +68,20 @@ module Patches
 
             def receive_calendar_reply(ical, notes = nil)
                 event = ical.events.first
-                return unless issue = target_meeting(event)
-                return unless issue.watched_by?(user) # Is attendee?
+                unless issue = target_meeting(event)
+                    logger.error "MailHandler: Unable to determine target meeting" if logger
+                    return true
+                end
+                unless issue.watched_by?(user) # Is attendee?
+                    logger.error "MailHandler: #{user} is not attendee of meeting ##{issue.id}" if logger
+                    return true
+                end
                 user_mails = user.mails.map(&:downcase)
-                return unless attendee = event.attendee.detect{ |attendee| user_mails.include?(attendee.value.to_s.downcase.sub(%r{^mailto:}, '')) }
-                return unless response = attendee.ical_params['partstat']
+                return true unless attendee = event.attendee.detect{ |attendee| user_mails.include?(attendee.value.to_s.downcase.sub(%r{^mailto:}, '')) }
+                return true unless response = attendee.ical_params['partstat']
                 response = response.first if response.is_a?(Array)
                 response = response.to_s.upcase
-                return unless %w(NEEDS-ACTION ACCEPTED TENTATIVE DECLINED).include?(response)
+                return true unless %w(NEEDS-ACTION ACCEPTED TENTATIVE DECLINED).include?(response)
                 response = nil if response == 'NEEDS-ACTION'
                 acceptance = issue.acceptances.where(:prop_key => [ user.id, '' ]).first
                 if !acceptance || acceptance.value != response
