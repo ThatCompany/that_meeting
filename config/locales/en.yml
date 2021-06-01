@@ -55,6 +55,7 @@ en:
   label_meeting_status_accepted: Meeting accepted
   label_meeting_status_tentative: Meeting accepted tentatively
   label_meeting_status_declined: Meeting declined
+  label_last_date: Last date
   recurrence_type: Repeat
   recurrence_wday: Repeat week day
   recurrence_day: Repeat day
@@ -69,4 +70,5 @@ en:
         not_a_time: is not a valid time
         greater_than_start_time: must be greater than start time
   text_attendee_invited: "You have been invited to meeting %{id} by %{author}."
+  text_tip_meeting_occurrence_day: issue repeated on this day
   notice_calendar_counter_declined: Counter proposal declined.

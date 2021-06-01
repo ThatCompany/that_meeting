@@ -1,0 +1,7 @@
+<%= javascript_tag do %>
+  $(document).ready(function() {
+    $('p.cal.legend .starting').first().after($('<span>', {
+      'class': 'occurrence'
+    }).text('<%= escape_javascript(l(:text_tip_meeting_occurrence_day)) %>'));
+  });
+<% end %>

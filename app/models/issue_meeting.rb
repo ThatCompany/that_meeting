@@ -119,7 +119,35 @@ class IssueMeeting < ActiveRecord::Base
         @time_zone ||= ActiveSupport::TimeZone[Setting.plugin_that_meeting['system_timezone']]
     end
 
+    def occurrences_between(start_date, end_date, time_zone = User.current.time_zone)
+        time_zone ||= self.time_zone
+        start_time = time_zone.parse("#{start_date.strftime('%Y-%m-%d')} 00:00:00")
+        end_time = time_zone.parse("#{end_date.strftime('%Y-%m-%d')} 23:59:59")
+        map_rrule(time_zone) do |rrule|
+            rrule.between(start_time, end_time)
+        end.reject do |start_time|
+            start_time.to_date == issue.start_date || start_time.to_date == issue.due_date
+        end.collect do |start_time|
+            end_time = start_time + (self.end_time - self.start_time).seconds if self.end_time
+            IssueMeeting::Occurrence.new(issue, start_time, end_time)
+        end
+    end
+
+    def last_occurrence_date(time_zone = User.current.time_zone)
+        map_rrule(time_zone){ |rrule| rrule.all.last }.sort.last if recurrence.end
+    end
+
 private
+
+    # https://github.com/square/ruby-rrule
+    def map_rrule(time_zone = User.current.time_zone, &block)
+        time_zone ||= self.time_zone
+        to_ical.events.map do |event|
+            event.rrule.map do |rule|
+                yield RRule::Rule.new(rule.value_ical, :dtstart => event.dtstart, :tzid => event.dtstart.ical_params['tzid'])
+            end
+        end.flatten
+    end
 
     def parse_time(arg, user = User.current)
         if arg.is_a?(String) && !arg.empty?

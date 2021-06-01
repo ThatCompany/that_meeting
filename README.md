@@ -66,7 +66,7 @@ The following things are incomplete or may not work as expected:
 ## Installation
 
 - Move `that_meeting` directory to the `plugins` directory of Redmine
-- Run `bundle install --without development test` (this will install `icalendar` gem)
+- Run `bundle install --without development test` (this will install `icalendar` and `rrule` gems)
 - Run `rake redmine:plugins:migrate RAILS_ENV=production`
 - Restart Redmine
 

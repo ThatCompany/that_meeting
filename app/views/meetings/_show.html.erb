@@ -13,6 +13,7 @@
 
   <%= javascript_tag do %>
     var $start_date = $('.attributes .start-date.attribute');
+    var $due_date = $('.attributes .due-date.attribute');
     var $meeting_date = $('.attributes .meeting-date.attribute');
     var $meeting_recurrence = $('.attributes .meeting-recurrence.attribute');
     if ($start_date.length > 0) {
@@ -21,6 +22,7 @@
     }
     $meeting_date.show();
     $meeting_recurrence.show();
+    $due_date.find('.label').text('<%= escape_javascript(l(:label_last_date)) %>:');
 
     $(document).ready(function() {
       var $icsLink = $('<a>', {

@@ -16,6 +16,9 @@ Rails.configuration.to_prepare do
     unless IssuesController.included_modules.include?(Patches::ThatMeetingIssuesControllerPatch)
         IssuesController.send(:include, Patches::ThatMeetingIssuesControllerPatch)
     end
+    unless CalendarsController.included_modules.include?(Patches::ThatMeetingCalendarsControllerPatch)
+        CalendarsController.send(:include, Patches::ThatMeetingCalendarsControllerPatch)
+    end
     unless ActionView::Base.included_modules.include?(I18n::TimeFormatter)
         ActionView::Base.send(:include, I18n::TimeFormatter)
     end
@@ -24,6 +27,9 @@ Rails.configuration.to_prepare do
     end
     unless WatchersHelper.included_modules.include?(Patches::ThatMeetingWatchersHelperPatch)
         WatchersHelper.send(:include, Patches::ThatMeetingWatchersHelperPatch)
+    end
+    unless Redmine::Helpers::Calendar.included_modules.include?(Patches::ThatMeetingCalendarPatch)
+        Redmine::Helpers::Calendar.send(:include, Patches::ThatMeetingCalendarPatch)
     end
     unless Issue.included_modules.include?(Patches::ThatMeetingIssuePatch)
         Issue.send(:include, Patches::ThatMeetingIssuePatch)

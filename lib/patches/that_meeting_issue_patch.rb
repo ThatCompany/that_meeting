@@ -28,6 +28,14 @@ module Patches
 
                 before_validation :update_meeting_due_date, :if => Proc.new { |issue| issue.meeting? }
 
+                scope :meeting, lambda {
+                    if Setting.plugin_that_meeting['tracker_ids'].is_a?(Array) && Setting.plugin_that_meeting['tracker_ids'].any?
+                        where(:tracker_id => Setting.plugin_that_meeting['tracker_ids'])
+                    else
+                        none
+                    end
+                }
+
                 alias_method :safe_attribute_names_without_meeting, :safe_attribute_names
                 alias_method :safe_attribute_names, :safe_attribute_names_with_meeting
 
@@ -133,7 +141,9 @@ module Patches
             def update_meeting_due_date
                 if start_date_changed? || meeting.recurrence_changed?
                     if meeting.recurrence.any?
-                        if meeting.recurrence.until
+                        if meeting.recurrence.count
+                            self.due_date = meeting.last_occurrence_date.try(&:to_date)
+                        elsif meeting.recurrence.until
                             self.due_date = meeting.recurrence.until
                         else
                             self.due_date = nil # Recurring forever

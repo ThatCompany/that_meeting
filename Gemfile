@@ -1,1 +1,2 @@
 gem 'icalendar'
+gem 'rrule'

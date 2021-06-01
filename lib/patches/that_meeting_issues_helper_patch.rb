@@ -26,6 +26,7 @@ module Patches
                 if issue.meeting?
                     @cached_label_date ||= l(:label_date)
                     @cached_label_recurrence ||= l(:field_recurrence)
+                    @cached_label_last_date ||= l(:label_last_date)
 
                     meetinginfo = "<strong>#{@cached_label_date}</strong>: #{format_time(issue.start_time)}"
                     meetinginfo << " - #{format_time(issue.end_time, false)}" if issue.end_time
@@ -33,6 +34,7 @@ module Patches
                     meetinginfo << "<strong>#{@cached_label_recurrence}</strong>: #{issue.recurrence.to_s}<br />"
 
                     tooltip.sub!(%r{<strong>#{Regexp.escape(@cached_label_start_date)}</strong>: .*?<br />}, meetinginfo)
+                    tooltip.sub!(%r{<strong>#{Regexp.escape(@cached_label_due_date)}</strong>:}, "<strong>#{@cached_label_last_date}</strong>:")
                 end
                 tooltip.html_safe
             end

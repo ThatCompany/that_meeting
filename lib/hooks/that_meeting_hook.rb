@@ -21,5 +21,7 @@ module Hooks
         render_on :view_issues_form_details_bottom, :partial => 'meetings/form'
         render_on :view_issues_show_details_bottom, :partial => 'meetings/show'
 
+        render_on :view_calendars_show_bottom, :partial => 'meetings/calendar'
+
     end
 end
