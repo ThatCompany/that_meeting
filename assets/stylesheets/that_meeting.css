@@ -30,7 +30,7 @@ tr.issue td.recurrence {
     white-space: normal;
     text-align: left;
 }
-table.cal a.issue, p.cal.legend .occurrence {
+table.cal td > div.issue:not(.starting):not(.ending) a.issue, p.cal.legend .occurrence {
     background: url(../images/bullet_occurrence.png) no-repeat -1px -2px;
     padding-left: 16px;
 }

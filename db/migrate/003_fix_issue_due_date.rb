@@ -12,6 +12,9 @@ class FixIssueDueDate < Rails::VERSION::MAJOR < 5 ? ActiveRecord::Migration : Ac
                 issue.update_column(:due_date, issue.start_date)
             end
         end
+        Issue.meeting.where.not(:due_date => nil).select{ |issue| issue.meeting.recurrence.any? && !issue.meeting.recurrence.end }.each do |issue|
+            issue.update_column(:due_date, nil)
+        end
     end
 
 end

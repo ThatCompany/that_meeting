@@ -57,7 +57,7 @@ Redmine::Plugin.register :that_meeting do
     author_url 'http://www.andriylesyuk.com/'
     description 'Converts issues of the selected trackers into iCalendar events.'
     url 'https://github.com/thatcompany/that_meeting'
-    version '0.0.1'
+    version '0.0.2'
 
     settings :default => {
         'tracker_ids' => [],
