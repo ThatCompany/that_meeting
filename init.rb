@@ -28,6 +28,9 @@ Rails.configuration.to_prepare do
     unless WatchersHelper.included_modules.include?(Patches::ThatMeetingWatchersHelperPatch)
         WatchersHelper.send(:include, Patches::ThatMeetingWatchersHelperPatch)
     end
+    unless MyHelper.included_modules.include?(Patches::ThatMeetingMyHelperPatch)
+        MyHelper.send(:include, Patches::ThatMeetingMyHelperPatch)
+    end
     unless Redmine::Helpers::Calendar.included_modules.include?(Patches::ThatMeetingCalendarPatch)
         Redmine::Helpers::Calendar.send(:include, Patches::ThatMeetingCalendarPatch)
     end
