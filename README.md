@@ -91,6 +91,10 @@ In the plugin's settings:
   for meetings (if users have chosen not to be notified of changes, that they
   made themselves, they won't get invitations for meetings, that they create,
   if this setting is not enabled)
+- Choose whether Redmine should send email notifications about meeting replies
+  (meeting replies are saved to issue history regardless of this option, but it
+  can be used to reduce the amount of email notifications, when a meeting has
+  too many attendees)
 - Choose the time zone, which will be used for all meeting dates
 - Choose the time zone format, which should be used in time values
 

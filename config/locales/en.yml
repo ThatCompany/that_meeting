@@ -47,6 +47,7 @@ en:
   label_respect_email_visibility: Respect email visibility settings
   label_cancel_statuses: Cancel statuses
   label_force_icalendar_notifications: Force email notifications for meetings
+  label_suppress_reply_notifications: Suppress meeting reply notifications
   label_system_timezone: System time zone
   label_timezone_format: Time zone format
   label_attendees: Attendees

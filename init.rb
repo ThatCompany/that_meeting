@@ -67,6 +67,7 @@ Redmine::Plugin.register :that_meeting do
         'hide_mails' => true,
         'cancel_status_ids' => [],
         'force_notifications' => false,
+        'no_reply_notify' => false,
         'system_timezone' => (File.read('/etc/timezone').strip rescue nil),
         'timezone_format' => '%Z'
     }, :partial => 'settings/meeting'

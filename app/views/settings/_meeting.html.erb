@@ -25,6 +25,10 @@
   <%= check_box_tag('settings[force_notifications]', '1', @settings['force_notifications']) %>
 </p>
 <p>
+  <%= label_tag('settings[no_reply_notify]', l(:label_suppress_reply_notifications)) %>
+  <%= check_box_tag('settings[no_reply_notify]', '1', @settings['no_reply_notify']) %>
+</p>
+<p>
   <%= label_tag('settings[system_timezone]', l(:label_system_timezone)) %>
   <%= select_tag('settings[system_timezone]', options_for_select(ActiveSupport::TimeZone.all.map{ |zone| [ zone.to_s, zone.tzinfo.identifier ] }, @settings['system_timezone']), :include_blank => true) %>
 </p>

@@ -12,6 +12,9 @@ module Patches
 
                 alias_method :add_attribute_detail_without_time, :add_attribute_detail
                 alias_method :add_attribute_detail, :add_attribute_detail_with_time
+
+                alias_method :send_notification_without_reply, :send_notification
+                alias_method :send_notification, :send_notification_with_reply
             end
         end
 
@@ -30,6 +33,14 @@ module Patches
                     details << JournalDetail.new(:property => 'attendee', :prop_key => '')
                 end
                 true
+            end
+
+            def send_notification_with_reply
+                if journalized.is_a?(Issue) && journalized.meeting? && Setting.plugin_that_meeting['no_reply_notify'] &&
+                   details.all?{ |detail| detail.property == 'attendee' && detail.prop_key.present? }
+                    self.notify = false
+                end
+                send_notification_without_reply
             end
 
         end
