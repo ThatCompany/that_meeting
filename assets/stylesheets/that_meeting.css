@@ -26,9 +26,22 @@ ul.watchers li span.meeting-status {
     background-image: url(../images/close.png);
     background-size: 12px;
 }
+.icon-edit-occurrence {
+    background-image: url(../images/edit_occurrence.png);
+}
+.icon-del-occurrence {
+    background-image: url(../images/delete_occurrence.png);
+}
 tr.issue td.recurrence {
     white-space: normal;
     text-align: left;
+}
+tr.meeting-exception td.date {
+    text-align: left;
+}
+tr.meeting-exception.deleted td.date {
+    text-decoration: line-through;
+    color: #999;
 }
 table.cal td > div.issue:not(.starting):not(.ending) a.issue, p.cal.legend .occurrence {
     background: url(../images/bullet_occurrence.png) no-repeat -1px -2px;

@@ -24,11 +24,18 @@ module Patches
             def render_issue_tooltip_with_meeting(issue)
                 tooltip = render_issue_tooltip_without_meeting(issue)
                 if issue.meeting?
+                    @cached_label_occurrence ||= l(:label_occurrence)
                     @cached_label_date ||= l(:label_date)
                     @cached_label_recurrence ||= l(:field_recurrence)
                     @cached_label_last_date ||= l(:label_last_date)
 
-                    meetinginfo = "<strong>#{@cached_label_date}</strong>: #{format_time(issue.start_time)}"
+                    meetinginfo = ''
+                    if issue.occurrence
+                        meetinginfo << "<strong>#{@cached_label_occurrence}</strong>: #{format_time(issue.occurrence.start_time)}"
+                        meetinginfo << " - #{format_time(issue.occurrence.end_time, false)}" if issue.occurrence.end_time
+                        meetinginfo << "<br />"
+                    end
+                    meetinginfo << "<strong>#{@cached_label_date}</strong>: #{format_time(issue.start_time)}"
                     meetinginfo << " - #{format_time(issue.end_time, false)}" if issue.end_time
                     meetinginfo << "<br />"
                     meetinginfo << "<strong>#{@cached_label_recurrence}</strong>: #{issue.recurrence.to_s}<br />"

@@ -22,6 +22,9 @@ Rails.configuration.to_prepare do
     unless ActionView::Base.included_modules.include?(I18n::TimeFormatter)
         ActionView::Base.send(:include, I18n::TimeFormatter)
     end
+    unless ApplicationHelper.included_modules.include?(Patches::ThatMeetingApplicationHelperPatch)
+        ApplicationHelper.send(:include, Patches::ThatMeetingApplicationHelperPatch)
+    end
     unless IssuesHelper.included_modules.include?(Patches::ThatMeetingIssuesHelperPatch)
         IssuesHelper.send(:include, Patches::ThatMeetingIssuesHelperPatch)
     end
@@ -60,7 +63,7 @@ Redmine::Plugin.register :that_meeting do
     author_url 'http://www.andriylesyuk.com/'
     description 'Converts issues of the selected trackers into iCalendar events.'
     url 'https://github.com/thatcompany/that_meeting'
-    version '0.0.2'
+    version '1.0.0'
 
     settings :default => {
         'tracker_ids' => [],

@@ -46,13 +46,17 @@ supported by major calendar software. These include:
 
 Additionally, the plugin comes with the following features:
 
+- Event occurrences are shown in Redmine calendar
+- An event occurrence can be edited (**Date**, **Start time** and/or **End time**
+  can be changed) or removed (via calendar)
 - Events' **Start time**, **End time** and **Repeat** can be shown in the issues
   list (a.k.a., the issue query)
 - Issues, for which the iCalendar functionality is enabled, can be exported in ICS
 
 The following things are incomplete or may not work as expected:
 
-- Currently, only the first occurrence of the event is shown in the Redmine calendar
+- A day can have only one occurrence of the meeting, you can't have multiple
+  occurrences of the same meeting on the same day
 - Some iCalendar clients (such as Google Calendar) allow to propose new time
   for events (so called `COUNTER` requests) - this is not currently supported by
   That Meeting plugin (when it receives such a request, it automatically sends
@@ -118,3 +122,5 @@ GNU General Public License (GPL) v2.0
 - https://www.iconfinder.com/icons/14332/calendar_down_month_icon (Dat Nguyen)
 - https://www.iconfinder.com/icons/1398911/check_correct_mark_success_tick_valid_yes_icon (iconpack)
 - https://www.iconfinder.com/icons/1398919/cancel_close_cross_delete_incorrect_invalid_x_icon (iconpack)
+- https://www.iconfinder.com/icons/35802/calendar_edit_event_icon (FatCow Web Hosting)
+- https://www.iconfinder.com/icons/35801/calendar_delete_icon (FatCow Web Hosting)

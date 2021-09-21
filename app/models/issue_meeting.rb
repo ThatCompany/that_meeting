@@ -5,6 +5,8 @@ class IssueMeeting < ActiveRecord::Base
 
     belongs_to :issue
 
+    has_many :exceptions, :class_name => 'IssueMeetingException', :foreign_key => 'meeting_id', :dependent => :destroy
+
     serialize :recurrence, IssueMeeting::Recurrence
 
     validates_presence_of :start_time
@@ -42,7 +44,7 @@ class IssueMeeting < ActiveRecord::Base
     end
 
     def uid
-        issue.created_on.utc.strftime('%Y%m%dT%H%M%S') + '-issue-' + issue.id.to_s + '@' +
+        (issue.created_on || DateTime.now).utc.strftime('%Y%m%dT%H%M%S') + '-issue-' + issue.id.to_s + '@' +
         (Setting.host_name =~ /\A(https?\:\/\/)?(.+?)(\:(\d+))?(\/.+)?\z/i ? $2 : Setting.host_name).sub(%r{\Awww\.}, '')
     end
 
@@ -61,6 +63,19 @@ class IssueMeeting < ActiveRecord::Base
             event.dtend       = Icalendar::Values::DateTime.new(end_time, :tzid => time_zone ? time_zone.tzinfo.identifier : 'UTC') if end_time
             event.duration    = ical_duration if duration && !end_time
             event.rrule       = recurrence.to_recur if recurrence.any?
+            if exceptions.any?
+                event.exdate = [ exceptions.collect{ |exception| Icalendar::Values::DateTime.new(exception.datetime, :tzid => time_zone ? time_zone.tzinfo.identifier : 'UTC') } ]
+                if (rdates = exceptions.select{ |exception| exception.start_date }).any?
+                    event.rdate = rdates.collect do |rdate|
+                        if rdate.end_time
+                            Icalendar::Values::Period.new(Icalendar::Values::DateTime.new(rdate.start_time).value_ical + '/' +
+                                                          Icalendar::Values::DateTime.new(rdate.end_time).value_ical, :tzid => time_zone ? time_zone.tzinfo.identifier : 'UTC')
+                        else
+                            Icalendar::Values::DateTime.new(rdate.start_time, :tzid => time_zone ? time_zone.tzinfo.identifier : 'UTC')
+                        end
+                    end
+                end
+            end
             event.summary     = issue.subject
             event.description = issue.description unless issue.description.blank?
             event.status      = canceled? ? 'CANCELLED' : 'CONFIRMED'
@@ -119,17 +134,23 @@ class IssueMeeting < ActiveRecord::Base
         @time_zone ||= ActiveSupport::TimeZone[Setting.plugin_that_meeting['system_timezone']]
     end
 
-    def occurrences_between(start_date, end_date, time_zone = User.current.time_zone)
+    def occurrences_between(start_date, end_date, options = {}, time_zone = User.current.time_zone)
         time_zone ||= self.time_zone
         start_time = time_zone.parse("#{start_date.strftime('%Y-%m-%d')} 00:00:00")
         end_time = time_zone.parse("#{end_date.strftime('%Y-%m-%d')} 23:59:59")
-        map_rrule(time_zone) do |rrule|
-            rrule.between(start_time, end_time)
-        end.reject do |start_time|
-            start_time.to_date == issue.start_date || start_time.to_date == issue.due_date
-        end.collect do |start_time|
-            end_time = start_time + (self.end_time - self.start_time).seconds if self.end_time
-            IssueMeeting::Occurrence.new(issue, start_time, end_time)
+        if recurrence.any?
+            occurrences = map_rrule(time_zone, options) do |rrule|
+                rrule.between(start_time, end_time)
+            end.collect do |start_time|
+                occurrence_end_time = self.end_time ? start_time + (self.end_time - self.start_time).seconds : nil
+                IssueMeeting::Occurrence.new(issue, start_time, occurrence_end_time)
+            end
+            if (rdates = exceptions.select{ |exception| exception.start_date && exception.start_date >= start_time && exception.start_date <= end_time}).any?
+                occurrences += rdates.collect{ |rdate| IssueMeeting::Occurrence.new(issue, rdate.start_time, rdate.end_time, rdate) }
+            end
+            occurrences
+        else
+            [ IssueMeeting::Occurrence.new(issue, issue.start_time, issue.end_time) ]
         end
     end
 
@@ -140,11 +161,13 @@ class IssueMeeting < ActiveRecord::Base
 private
 
     # https://github.com/square/ruby-rrule
-    def map_rrule(time_zone = User.current.time_zone, &block)
+    def map_rrule(time_zone = User.current.time_zone, options = {}, &block)
         time_zone ||= self.time_zone
         to_ical.events.map do |event|
             event.rrule.map do |rule|
-                yield RRule::Rule.new(rule.value_ical, :dtstart => event.dtstart, :tzid => event.dtstart.ical_params['tzid'])
+                yield RRule::Rule.new(rule.value_ical, :dtstart => event.dtstart,
+                                                       :exdate => options[:exdates].nil? || options[:exdates] ? event.exdate.flatten : [],
+                                                       :tzid => event.dtstart.ical_params['tzid'])
             end
         end.flatten
     end

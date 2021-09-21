@@ -15,6 +15,8 @@ module Patches
                     where(:property => 'attendee').order("#{JournalDetail.table_name}.id DESC")
                 }, :through => :journals, :source => :details
 
+                attr_accessor :occurrence
+
                 delegate :start_time, :start_time=,
                          :end_time,   :end_time=,
                          :recurrence, :recurrence=, :to => :meeting, :allow_nil => true
@@ -26,7 +28,8 @@ module Patches
                     issue.new_record? || issue.attributes_editable?(user)
                 }
 
-                before_validation :update_meeting_due_date, :if => Proc.new { |issue| issue.meeting? }
+                before_validation :reset_due_date, :if => Proc.new { |issue| issue.meeting? }
+                before_save :update_meeting_due_date, :if => Proc.new { |issue| issue.meeting? }
 
                 scope :meeting, lambda {
                     if Setting.plugin_that_meeting['tracker_ids'].is_a?(Array) && Setting.plugin_that_meeting['tracker_ids'].any?
@@ -138,12 +141,16 @@ module Patches
                 end
             end
 
+            def reset_due_date
+                self.due_date = nil if start_date_changed?
+            end
+
             def update_meeting_due_date
                 if start_date_changed? || meeting.recurrence_changed?
                     if meeting.recurrence.any?
-                        if meeting.recurrence.count
+                        if meeting.recurrence.end == :count
                             self.due_date = meeting.last_occurrence_date.try(&:to_date)
-                        elsif meeting.recurrence.until
+                        elsif meeting.recurrence.end == :until
                             self.due_date = meeting.recurrence.until
                         else
                             self.due_date = nil # Recurring forever

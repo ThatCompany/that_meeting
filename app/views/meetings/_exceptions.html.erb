@@ -1,0 +1,26 @@
+<% if issue.meeting? && issue.meeting.exceptions.any? %>
+  <% manage_exceptions = issue.safe_attribute?('start_date') %>
+  <hr />
+  <p><strong><%= l(:label_exception_plural) %></strong></p>
+  <table class="list meeting-exceptions odd-even">
+    <% issue.meeting.exceptions.sorted.each do |exception| %>
+      <tr id="exception-<%= exception.id %>" class="meeting-exception<%= ' deleted' unless exception.start_date %>">
+        <td class="date">
+          <%= format_time(exception.full_date(exception.date, issue.start_time)) %>
+          <% if issue.end_time %>- <%= format_time(issue.end_time, false) %><% end %>
+          <% if exception.start_date %>
+            &rArr; <%= format_time(exception.start_time) %>
+            <% if exception.end_time %>- <%= format_time(exception.end_time, false) %><% end %>
+          <% end %>
+        </td>
+        <td class="buttons">
+          <% if manage_exceptions %>
+            <%= link_to(l(:button_edit), edit_issue_occurrence_path(issue, exception.date_param), :title => l(:button_edit), :class => 'icon-only icon-edit') %>
+            <%= link_to(l(:button_reset), reset_issue_occurrence_path(issue, exception.date_param),
+                        :method => :delete, :data => { :confirm => l(:text_are_you_sure) }, :remote => true, :title => l(:button_reset), :class => 'icon-only icon-del') %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

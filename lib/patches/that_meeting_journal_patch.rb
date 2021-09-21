@@ -29,7 +29,8 @@ module Patches
 
             def reset_acceptance
                 if journalized.is_a?(Issue) && journalized.meeting? && !journalized.meeting.no_responses? &&
-                   details.any?{ |detail| detail.property == 'attr' && %w(start_date start_time end_time recurrence).include?(detail.prop_key) }
+                   details.any?{ |detail| (detail.property == 'attr' && %w(start_date start_time end_time recurrence).include?(detail.prop_key)) ||
+                                          (detail.property == 'occurrence' && detail.value) }
                     details << JournalDetail.new(:property => 'attendee', :prop_key => '')
                 end
                 true

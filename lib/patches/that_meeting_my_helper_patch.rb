@@ -26,6 +26,7 @@ module Patches
                     meetings = []
                     issues = Issue.visible.includes(:project, :tracker, :priority, :assigned_to)
                                           .references(:project, :tracker, :priority, :assigned_to)
+                                          .preload(:meeting => :exceptions)
                                           .where("tracker_id IN (?) AND start_date <= ? AND (due_date >= ? OR due_date IS NULL)",
                                                  Setting.plugin_that_meeting['tracker_ids'], calendar.enddt, calendar.startdt)
                     issues.each do |issue|

@@ -23,7 +23,8 @@ module Patches
 
                 if meetings_configured
                     meetings = []
-                    issues = @query.base_scope.where([ "(tracker_id IN (?) AND start_date <= ? AND (due_date >= ? OR due_date IS NULL))",
+                    issues = @query.base_scope.preload(:meeting => :exceptions)
+                                              .where([ "(tracker_id IN (?) AND start_date <= ? AND (due_date >= ? OR due_date IS NULL))",
                                                        Setting.plugin_that_meeting['tracker_ids'], @calendar.enddt, @calendar.startdt ])
                     issues.each do |issue|
                         meetings += issue.meeting.occurrences_between(@calendar.startdt, @calendar.enddt)

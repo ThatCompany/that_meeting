@@ -116,7 +116,7 @@ module Patches
                             MEETING_ATTRIBUTES.include?(detail.prop_key)
                         end
                     else
-                        %w(attachment attendee).include?(detail.property)
+                        %w(attachment attendee occurrence).include?(detail.property)
                     end
                 end
             end

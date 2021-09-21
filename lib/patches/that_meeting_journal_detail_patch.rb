@@ -17,6 +17,8 @@ module Patches
 
             def normalize_with_meeting(arg)
                 case arg
+                when DateTime
+                    arg.strftime('%Y-%m-%d %H:%M:%S')
                 when Time
                     arg = self.class.default_timezone == :utc ? arg.utc : arg.localtime
                     arg.strftime('%H:%M:%S')

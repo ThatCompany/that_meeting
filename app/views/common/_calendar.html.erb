@@ -1,0 +1,7 @@
+<%= render :file => File.join(Rails.root, 'app/views/common/_calendar.html.erb'), :locals => { :calendar => calendar } %>
+
+<%= javascript_tag do %>
+  var $form = $('table.cal').last().parents('form').first();
+  $form.data('startdt', new Date(<%= calendar.startdt.strftime('%Y, %m - 1, %d') %>))
+       .data('enddt', new Date(<%= calendar.enddt.strftime('%Y, %m - 1, %d') %>));
+<% end %>

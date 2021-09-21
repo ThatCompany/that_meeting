@@ -2,6 +2,8 @@ en:
   field_recurrence: Repeat
   field_start_time: Start time
   field_end_time: End time
+  field_occurrence_start_time: Occurrence start time
+  field_occurrence_end_time: Occurrence end time
   label_daily: daily
   label_weekly: weekly
   label_monthly: monthly
@@ -37,6 +39,7 @@ en:
   label_never: never
   label_after: after
   label_on_date: "on"
+  label_occurrence: Occurrence
   label_occurrences: occurrences
   label_repeat_on_week_day: on %{value}
   label_repeat_on_day: on %{value}
@@ -57,6 +60,9 @@ en:
   label_meeting_status_tentative: Meeting accepted tentatively
   label_meeting_status_declined: Meeting declined
   label_last_date: Last date
+  label_edit_occurrence: Edit occurrence
+  label_delete_occurrence: Delete occurrence
+  label_exception_plural: Exceptions
   recurrence_type: Repeat
   recurrence_wday: Repeat week day
   recurrence_day: Repeat day
@@ -70,6 +76,9 @@ en:
       messages:
         not_a_time: is not a valid time
         greater_than_start_time: must be greater than start time
+  error_date_cannot_be_less_than_meeting_start_date: Date cannot be less than meeting start date
+  error_date_cannot_be_greater_than_meeting_due_date: Date cannot be greater than meeting last date
   text_attendee_invited: "You have been invited to meeting %{id} by %{author}."
   text_tip_meeting_occurrence_day: issue repeated on this day
+  text_issue_occurrences_destroy_confirmation: Are you sure you want to delete the selected occurrence?
   notice_calendar_counter_declined: Counter proposal declined.

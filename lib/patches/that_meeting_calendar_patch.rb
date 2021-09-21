@@ -24,12 +24,17 @@ module Patches
             end
 
             def meetings=(meetings)
-                @meetings_by_days = meetings.group_by{ |meeting| meeting.start_time.to_date }
-                                            .transform_values{ |meetings| meetings.map(&:issue) }
+                @meetings_by_days = meetings.group_by{ |meeting| meeting.start_time.to_date }.transform_values do |meetings|
+                    meetings.collect do |meeting|
+                        issue = meeting.issue.clone
+                        issue.occurrence = meeting
+                        issue
+                    end
+                end
             end
 
             def events_on_with_meetings(day)
-                (events_on_without_meetings(day) + (@meetings_by_days[day] || [])).uniq
+                (events_on_without_meetings(day).reject{ |event| event.is_a?(Issue) && event.meeting? } + (@meetings_by_days[day] || [])).uniq
             end
 
         end

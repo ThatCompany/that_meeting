@@ -3,7 +3,7 @@
     <div class="label"><%= l(:label_date) %>:</div>
     <div class="value">
       <%= format_time(issue.start_time) %>
-      <% if issue.end_time%>- <%= format_time(issue.end_time, false) %><% end %>
+      <% if issue.end_time %>- <%= format_time(issue.end_time, false) %><% end %>
     </div>
   </div>
   <div class="meeting-recurrence attribute" style="display: none;">

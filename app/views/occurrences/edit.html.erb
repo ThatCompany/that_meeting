@@ -1,0 +1,39 @@
+<h2><%= "#{@issue.tracker} ##{@issue.id}: #{@issue.subject}" %></h2>
+
+<%= labelled_form_for(@exception, :as => :exception, :url => issue_occurrence_path(@issue, @exception.date_param), :html => { :method => :put }) do |f| %>
+  <%= back_url_hidden_field_tag %>
+
+  <%= error_messages_for 'exception' %>
+
+  <div class="box">
+    <fieldset class="tabular">
+      <legend><%= l(:label_change_properties) %></legend>
+      <p>
+        <%= f.label_for_field(:start_date, :label => :label_date) %>
+        <%= f.date_field(:start_date, :size => 10, :no_label => true) %>
+        <%= calendar_for('issue_start_date') %>
+        <%= time_field_tag('exception[start_time]', edit_time(@exception.start_time), :size => 6) %> -
+        <%= time_field_tag('exception[end_time]', edit_time(@exception.end_time), :size => 6) %>
+      </p>
+    </fieldset>
+    <% if @issue.notes_addable? %>
+      <fieldset>
+        <legend><%= l(:field_notes) %></legend>
+          <%= text_area_tag('exception[notes]', @exception.notes, :cols => 60, :rows => 10, :class => 'wiki-edit') %>
+          <%= wikitoolbar_for('exception_notes', preview_issue_path(:project_id => @project, :issue_id => @issue)) %>
+          <% if @issue.safe_attribute?('private_notes') %>
+            <%= hidden_field_tag('exception[private_notes]', 0) %>
+            <%= check_box_tag('exception[private_notes]', 1, @exception.private_notes) %>
+            <label for="exception_private_notes"><%= l(:field_private_notes) %></label>
+          <% end %>
+        </fieldset>
+    <% end %>
+  </div>
+
+  <%= submit_tag(l(:button_submit)) %>
+  <%= link_to(l(:button_cancel), back_url) if back_url.present? %>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= robot_exclusion_tag %>
+<% end %>
