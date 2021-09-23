@@ -20,7 +20,11 @@
       <fieldset>
         <legend><%= l(:field_notes) %></legend>
           <%= text_area_tag('exception[notes]', @exception.notes, :cols => 60, :rows => 10, :class => 'wiki-edit') %>
-          <%= wikitoolbar_for('exception_notes', preview_issue_path(:project_id => @project, :issue_id => @issue)) %>
+          <% unless respond_to?(:preview_link) %>
+            <%= wikitoolbar_for('exception_notes', preview_issue_path(:project_id => @project, :issue_id => @issue)) %>
+          <% else %>
+            <%= wikitoolbar_for('exception_notes') %>
+          <% end %>
           <% if @issue.safe_attribute?('private_notes') %>
             <%= hidden_field_tag('exception[private_notes]', 0) %>
             <%= check_box_tag('exception[private_notes]', 1, @exception.private_notes) %>

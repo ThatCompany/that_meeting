@@ -97,6 +97,7 @@ module Patches
         private
 
             def attach_ical(issue, user = nil)
+                issue.meeting.exceptions.reload
                 meeting = issue.meeting.to_ical(self, user)
                 attachments["#{issue.project.identifier}-#{issue.id}.ics"] = {
                     :content => meeting.to_ical,

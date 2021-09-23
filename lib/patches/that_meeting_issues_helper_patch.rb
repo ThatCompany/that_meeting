@@ -77,7 +77,7 @@ module Patches
                         l(detail.prop_key.empty? ? :label_meeting_status_all_reset : :label_meeting_status_none)
                     end
                 else
-                    show_detail_without_meeting(detail, no_html, options)
+                    show_detail_without_meeting(controller.is_a?(Mailer) ? detail.dup : detail, no_html, options)
                 end
             end
 

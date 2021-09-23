@@ -49,10 +49,11 @@ private
     def find_exception
         if @issue.meeting?
             @exception = IssueMeetingException.where(:meeting => @issue.meeting).find_by_date_param(params[:date])
-            @exception ||= IssueMeetingException.new(:meeting => @issue.meeting, :date => params[:date])
-        else
-            render_404
+            if @exception.nil? && (date = (params[:date].to_date rescue nil)) && @issue.meeting.occurrences_between(date, date).any?
+                @exception = IssueMeetingException.new(:meeting => @issue.meeting, :date => params[:date])
+            end
         end
+        render_404 unless @exception
     end
 
     def authorize

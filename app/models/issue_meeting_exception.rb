@@ -15,6 +15,8 @@ class IssueMeetingException < ActiveRecord::Base
     after_save :create_save_journal
     after_destroy :create_reset_journal
 
+    attr_protected :id if Rails::VERSION::MAJOR < 5
+
     safe_attributes :start_date, :start_time, :end_time, :if => lambda { |exception, user|
         exception.meeting.issue.attributes_editable?(user)
     }

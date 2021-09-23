@@ -48,7 +48,7 @@ Additionally, the plugin comes with the following features:
 
 - Event occurrences are shown in Redmine calendar
 - An event occurrence can be edited (**Date**, **Start time** and/or **End time**
-  can be changed) or removed (via calendar)
+  can be changed) or removed (via calendar, but only under Redmine 4.0 and above)
 - Events' **Start time**, **End time** and **Repeat** can be shown in the issues
   list (a.k.a., the issue query)
 - Issues, for which the iCalendar functionality is enabled, can be exported in ICS
