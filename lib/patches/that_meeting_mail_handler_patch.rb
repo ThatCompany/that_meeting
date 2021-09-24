@@ -16,6 +16,9 @@ module Patches
 
                 alias_method :receive_issue_reply_without_calendar, :receive_issue_reply
                 alias_method :receive_issue_reply, :receive_issue_reply_with_calendar
+
+                alias_method :issue_attributes_from_keywords_without_meeting, :issue_attributes_from_keywords
+                alias_method :issue_attributes_from_keywords, :issue_attributes_from_keywords_with_meeting
             end
         end
 
@@ -62,6 +65,17 @@ module Patches
                     end if ical
                 end
                 receive_issue_reply_without_calendar(issue_id, from_journal)
+            end
+
+            def issue_attributes_from_keywords_with_meeting(issue)
+                attributes = issue_attributes_from_keywords_without_meeting(issue)
+                if (start_time = get_keyword(:start_time, :format => '\d{1,2}:\d{2}'))
+                    attributes['start_time'] = start_time
+                end
+                if (end_time = get_keyword(:end_time, :format => '\d{1,2}:\d{2}'))
+                    attributes['end_time'] = end_time
+                end
+                attributes
             end
 
             MEETING_UID_RE = %r{\A[0-9T]+-issue-([0-9]+)@}
