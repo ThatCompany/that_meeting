@@ -4,8 +4,15 @@ class OccurrencesController < ApplicationController
     helper :issue_meetings
 
     before_action :find_issue
-    before_action :find_exception
+    before_action :find_exception, :except => :index
     before_action :authorize
+
+    def index
+        respond_to do |format|
+            format.html { redirect_to issue_path(@issue, :date => params[:date]) }
+            format.js
+        end
+    end
 
     def edit
         @exception.start_date ||= params[:date]
@@ -21,7 +28,7 @@ class OccurrencesController < ApplicationController
         @exception.safe_attributes = params[:exception]
         if @exception.save
             flash[:notice] = l(:notice_successful_update)
-            redirect_back_or_default issue_path(@issue)
+            redirect_back_or_default issue_path(@issue, :date => @exception.date_param.beginning_of_month)
         else
             render :action => 'edit'
         end
@@ -32,14 +39,14 @@ class OccurrencesController < ApplicationController
         @exception.nullify
         @exception.save
         flash[:notice] = l(:notice_successful_delete)
-        redirect_back_or_default issue_path(@issue)
+        redirect_back_or_default issue_path(@issue, :date => @exception.date_param.beginning_of_month)
     end
 
     def reset
         @exception.init_journal(User.current)
         @exception.destroy
         respond_to do |format|
-            format.html { redirect_back_or_default issue_path(@issue) }
+            format.html { redirect_back_or_default issue_path(@issue, :date => @exception.date_param.beginning_of_month) }
             format.js
         end
     end
@@ -57,7 +64,12 @@ private
     end
 
     def authorize
-        @issue.safe_attribute?('start_date') || deny_access
+        allow_access = if action_name == 'index'
+            User.current.allowed_to?(:view_issues, @project)
+        else
+            @issue.safe_attribute?('start_date')
+        end
+        allow_access || deny_access
     end
 
 end

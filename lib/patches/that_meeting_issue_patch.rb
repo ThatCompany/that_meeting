@@ -98,8 +98,10 @@ module Patches
             def safe_attribute_names_with_meeting(user = nil)
                 attribute_names = safe_attribute_names_without_meeting(user)
                 if meeting?
-                    attribute_names << 'assigned_to_id' unless attribute_names.include?('assigned_to_id')
-                    attribute_names << 'start_date' unless attribute_names.include?('start_date')
+                    if attributes_editable?(user || User.current)
+                        attribute_names << 'assigned_to_id' unless attribute_names.include?('assigned_to_id')
+                        attribute_names << 'start_date' unless attribute_names.include?('start_date')
+                    end
                     attribute_names.delete('due_date') if attribute_names.include?('due_date')
                 end
                 attribute_names

@@ -1,0 +1,50 @@
+<% today = Date.civil(User.current.today.year, User.current.today.month, 1) %>
+<div class="contextual">
+  <%= link_to(l(:label_calendar_this_month), issue_occurrences_path(@issue, :date => today), :remote => true) %>
+</div>
+<h3><%= l(:label_occurrence_plural) %></h3>
+<% @date = (params[:date].to_date rescue today) %>
+<% @calendar ||= Redmine::Helpers::Calendar.new(@date, current_language, :month) %>
+<%= form_tag(issue_occurrence_path(@issue, @calendar.startdt), :method => :delete) do %>
+  <% occurrences = @issue.meeting.occurrences_between(@calendar.startdt, @calendar.enddt) %>
+  <% occurrences_by_days = occurrences.group_by{ |meeting| meeting.start_time.to_date } %>
+  <table class="cal">
+    <thead>
+      <tr>
+        <th colspan="7" class="month">
+          <%= link_to("\xc2\xab", issue_occurrences_path(@issue, :date => @date << 1), :remote => true, :class => 'previous') %>
+          <%= month_name(@date.month) %> <%= @date.year %>
+          <%= link_to("\xc2\xbb", issue_occurrences_path(@issue, :date => @date >> 1), :remote => true, :class => 'next') %>
+        </th>
+      </tr>
+      <tr><% 7.times do |i| %><th scope="col"><%= I18n.t('date.abbr_day_names')[(@calendar.first_wday + i) % 7][0..1] %></th><% end %></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <% day = @calendar.startdt %>
+        <% while day <= @calendar.enddt %>
+          <% occurrence = occurrences_by_days[day].try(&:first) %>
+          <td class="<%= day.month == @calendar.month ? 'even' : 'odd' %><%= ' today' if User.current.today == day %>">
+            <p class="day-num">
+              <% if occurrence %>
+                <%= link_to(day.day, issue_occurrence_path(@issue, occurrence.date),
+                            :title => format_time(occurrence.start_time, false) + (occurrence.end_time ? ' - ' + format_time(occurrence.end_time, false) : ''),
+                            :class => 'occurrence') %>
+              <% else %>
+                <%= day.day %>
+              <% end %>
+            </p>
+          </td>
+          <% if day.cwday == @calendar.last_wday && day != @calendar.enddt %></tr><tr><% end %>
+          <% day = day + 1 %>
+        <% end %>
+      </tr>
+    </tbody>
+  </table>
+  <% if @issue.safe_attribute?('start_date') %>
+    <p class="buttons">
+      <%= submit_tag(l(:button_edit), :name => 'edit', :disabled => true, :class => 'button-small') %>
+      <%= submit_tag(l(:button_delete), :name => 'delete', :data => { :confirm => l(:text_are_you_sure) }, :disabled => true, :class => 'button-small') %>
+    </p>
+  <% end %>
+<% end %>

@@ -47,3 +47,40 @@ table.cal td > div.issue:not(.starting):not(.ending) a.issue, p.cal.legend .occu
     background: url(../images/bullet_occurrence.png) no-repeat -1px -2px;
     padding-left: 16px;
 }
+#sidebar table.cal th.month {
+    border-bottom: 1px solid #d7d7d7;
+}
+#sidebar table.cal th.month a {
+    font-weight: normal;
+    display: block;
+    padding: 0 3px;
+}
+#sidebar table.cal th.month a.previous {
+    float: left;
+}
+#sidebar table.cal th.month a.next {
+    float: right;
+}
+#sidebar table.cal tbody tr {
+    height: auto;
+}
+#sidebar table.cal td {
+    vertical-align: middle;
+}
+#sidebar table.cal td p.day-num {
+    text-align: center;
+    margin: 0;
+}
+#sidebar table.cal td a.occurrence {
+    background-color: #eef5fd;
+    text-decoration: none;
+    border-radius: 3px;
+    display: block;
+}
+#sidebar table.cal td a.occurrence.selection {
+    background-color: #507aaa;
+    color: #f8f8f8;
+}
+#occurrences input[type="submit"]:disabled {
+    color: #999;
+}

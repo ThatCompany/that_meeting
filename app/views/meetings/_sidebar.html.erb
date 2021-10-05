@@ -1,0 +1,26 @@
+<% if @issue && @issue.meeting? && @issue.meeting.recurrence.any? %>
+  <div id="occurrences">
+    <%= render :partial => 'occurrences/calendar' %>
+  </div>
+
+  <%= javascript_tag do %>
+    $('#occurrences').on('click', 'a.occurrence', function() {
+      var $this = $(this);
+      $this.closest('form').attr('action', $this.attr('href'));
+      <% if @issue.safe_attribute?('start_date') %>
+        var $occurrences = $('#occurrences');
+        $occurrences.find('a.occurrence.selection').removeClass('selection');
+        $this.addClass('selection');
+        $occurrences.find('p.buttons input').prop('disabled', false);
+      <% end %>
+      return false;
+    });
+    <% if @issue.safe_attribute?('start_date') %>
+      $('#occurrences').on('click', 'input[name="edit"]', function(event) {
+        window.location.href = $(this.form).attr('action') + '/edit?back_url=';
+        event.preventDefault();
+        return false;
+      });
+    <% end %>
+  <% end %>
+<% end %>

@@ -9,4 +9,8 @@ class IssueMeeting::Occurrence
         self.exception = exception
     end
 
+    def date
+        start_time.to_date
+    end
+
 end

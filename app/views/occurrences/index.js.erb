@@ -1,0 +1,4 @@
+$('#occurrences').html('<%= escape_javascript(render :partial => 'calendar') %>');
+if ('replaceState' in window.history) {
+  window.history.replaceState(null, document.title, '<%= issue_path(@issue, :date => params[:date]) %>');
+}

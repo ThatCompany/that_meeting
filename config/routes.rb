@@ -1,3 +1,4 @@
+get    'issues/:id/occurrences',             :to => 'occurrences#index', :as => :issue_occurrences
 get    'issues/:id/occurrences/:date/edit',  :to => 'occurrences#edit', :as => :edit_issue_occurrence
 put    'issues/:id/occurrences/:date',       :to => 'occurrences#update', :as => :issue_occurrence
 delete 'issues/:id/occurrences/:date',       :to => 'occurrences#destroy'

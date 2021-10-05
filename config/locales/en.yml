@@ -40,6 +40,7 @@ en:
   label_after: after
   label_on_date: "on"
   label_occurrence: Occurrence
+  label_occurrence_plural: Occurrences
   label_occurrences: occurrences
   label_repeat_on_week_day: on %{value}
   label_repeat_on_day: on %{value}
@@ -63,6 +64,7 @@ en:
   label_edit_occurrence: Edit occurrence
   label_delete_occurrence: Delete occurrence
   label_exception_plural: Exceptions
+  label_calendar_this_month: This month
   recurrence_type: Repeat
   recurrence_wday: Repeat week day
   recurrence_day: Repeat day
