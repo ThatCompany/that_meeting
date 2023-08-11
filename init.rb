@@ -1,6 +1,8 @@
 require 'redmine'
 
-require_dependency 'hooks/that_meeting_hook'
+Rails.configuration.to_prepare do
+  require_dependency 'that_meeting_hook'
+end
 
 Rails.logger.info 'Starting That Meeting plugin for Redmine'
 
